@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "90326850238",
+    "project_id": "fir-app-efbea",
+    "storage_bucket": "fir-app-efbea.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:90326850238:android:d2cabf31c3bb15e0e8dcef",
+        "android_client_info": {
+          "package_name": "com.knt.firebseapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "90326850238-i9v9o30oeh5699rbmi8n17fg00300ktr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClCbUC9Dg0eMLOG7xnW_SVtVK5UkwUmmY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "90326850238-i9v9o30oeh5699rbmi8n17fg00300ktr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
