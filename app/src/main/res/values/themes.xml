@@ -13,4 +13,24 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+
+    <!--For activity contianing toolbar-->
+    <!--Theme wo actionbar-->
+
+    <style name="AppThemeNo" parent="Theme.AppCompat.Light.NoActionBar">
+
+        <!--Customize your theme here-->
+        <item name="colorPrimary">@color/bilmiom</item>
+        <item name="colorPrimaryDark">@color/muhtesemturuncu</item>
+        <item name="colorAccent">@color/zeytinYesili</item>
+
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"></style>
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"></style>
+
+
+
+
 </resources>

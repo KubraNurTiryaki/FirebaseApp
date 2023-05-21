@@ -3,16 +3,23 @@ package com.knt.firebseapp;
 import static android.app.Activity.RESULT_OK;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -135,7 +142,7 @@ public class ProfileFragment extends Fragment {
                 /*                checks until required data get*/
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     //get data
-                    String name = "" + ds.child("name").getValue();  // Remember the thing we wrote in Firebase Realtime Database? that's it.
+                    String name  = "" + ds.child("name").getValue();  // Remember the thing we wrote in Firebase Realtime Database? that's it.
                     String email = "" + ds.child("email").getValue();  // Remember the thing we wrote in Firebase Realtime Database? that's it.
                     String phone = "" + ds.child("phone").getValue();  // Remember the thing we wrote in Firebase Realtime Database? that's it.
                     String image = "" + ds.child("image").getValue();  // Remember the thing we wrote in Firebase Realtime Database? that's it.
@@ -196,7 +203,8 @@ public class ProfileFragment extends Fragment {
 
     private void requestStoragePermission(){
         //request runtime storage permission
-        requestPermissions(storagePermissions,STORAGE_REQUEST_CODE);
+       // requestPermissions(storagePermissions,STORAGE_REQUEST_CODE);
+        ActivityCompat.requestPermissions(getActivity(),storagePermissions,STORAGE_REQUEST_CODE);
     }
 
 
@@ -212,15 +220,15 @@ public class ProfileFragment extends Fragment {
         boolean result1 = ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 ==(PackageManager.PERMISSION_GRANTED);
 
-        Toast.makeText(getActivity(), "checkCameraPermission içinde, ÇALIŞIYOR 0", Toast.LENGTH_SHORT).show();
         return result && result1;
     }
 
 
     private void requestCameraPermission(){
         //request runtime camera permission
-        requestPermissions(cameraPermissions,CAMERA_REQUEST_CODE);
-        Toast.makeText(getActivity(), "SORUN BURDA DEĞİL", Toast.LENGTH_SHORT).show();
+        //requestPermissions(cameraPermissions,CAMERA_REQUEST_CODE);
+        ActivityCompat.requestPermissions(getActivity(),cameraPermissions,CAMERA_REQUEST_CODE);
+        //Toast.makeText(getActivity(), "SORUN BURDA DEĞİL", Toast.LENGTH_SHORT).show();
     }
 
     private void showEditProfileDialog() {
@@ -299,7 +307,7 @@ public class ProfileFragment extends Fragment {
                 HashMap<String, Object> result = new HashMap<>();
                 result.put(key,value);
                 databaseReference.child(user.getUid()).updateChildren(result)
-                        .addOnSuccessListener(unused -> {
+                        .addOnSuccessListener(aVoid -> {
                             //updated, dismiss progress
                             pd.dismiss();
                             Toast.makeText(getActivity(), "Updated...", Toast.LENGTH_SHORT).show();
@@ -320,8 +328,11 @@ public class ProfileFragment extends Fragment {
         });
 
         //add buttons in dialog to cancel
-        builder.setNegativeButton("Cancel", (dialogInterface, i) -> {
-
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
         });
 
         //create and show dialog
@@ -349,7 +360,7 @@ public class ProfileFragment extends Fragment {
                 }
                 else{
                     pickFromCamera();
-                    Toast.makeText(getActivity(), "showImagePicDialog içinde, ÇALIŞIYOR 2", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), "showImagePicDialog içinde, ÇALIŞIYOR 2", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -430,10 +441,11 @@ public class ProfileFragment extends Fragment {
                 uploadProfileCoverPhoto(image_uri);
             }
 
-            else if(requestCode == IMAGE_PICK_CAMERA_CODE){
+            if(requestCode == IMAGE_PICK_CAMERA_CODE){
                 //image is picked from camera, get uri of image
-                image_uri = data.getData();
-                Toast.makeText(getActivity(), "On activity result içinde , camera. ÇALIŞIYOR 3", Toast.LENGTH_SHORT).show();
+                //image_uri = data.getData();
+                //Toast.makeText(getActivity(), "On activity result içinde , camera. ÇALIŞIYOR 3", Toast.LENGTH_SHORT).show();
+                uploadProfileCoverPhoto(image_uri);
 
 
             }
@@ -461,6 +473,8 @@ public class ProfileFragment extends Fragment {
         * profile and one image for cover for each user*/
 
         //path and name of iamge to be storeed in firebase storage
+        //e.g Users_Profile_Cover_Imgs/image_e12f3456f789.jpg
+        //e.g Users_Profile_Cover_Imgs/cover_c123n4567g89.jpg
         String filePathAndName =storagePath +""+profileOrCoverPhoto+"_"+user.getUid();
 
         StorageReference storageReference2nd = storageReference.child(filePathAndName);
@@ -468,6 +482,7 @@ public class ProfileFragment extends Fragment {
                 .addOnSuccessListener(taskSnapshot -> {
                     //image is uploaded to storage, now get its url and store in user's databse
                     Task<Uri> uriTask = taskSnapshot.getStorage().getDownloadUrl();
+
                     while (!uriTask.isSuccessful());
                     Uri downloadUri =uriTask.getResult();
 
@@ -482,7 +497,7 @@ public class ProfileFragment extends Fragment {
                         * url will be saved as a value against key "image" or "cover"*/
                         results.put(profileOrCoverPhoto,downloadUri.toString());
                         databaseReference.child(user.getUid()).updateChildren(results)
-                                .addOnSuccessListener(unused -> {
+                                .addOnSuccessListener(aVoid -> {
                                     //url in databse of user is added successfully
                                     //dismiss progress bar
                                     pd.dismiss();
@@ -491,9 +506,9 @@ public class ProfileFragment extends Fragment {
                                 .addOnFailureListener(e -> {
                                 //error adding url in databse of user
                                 //dismiss progress bar
+                                    pd.dismiss();
                                     Toast.makeText(getActivity(), " Error Image Updating...", Toast.LENGTH_SHORT).show();
 
-                                    pd.dismiss();
                                 });
                     }
 
@@ -524,9 +539,11 @@ public class ProfileFragment extends Fragment {
 
         //intent to start camera
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        //cameraIntent .setType("image/*"); //burası sanırım olmıycak burayı ben kendim gallery'den benzeterek koydum
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri);
         startActivityForResult(cameraIntent, IMAGE_PICK_CAMERA_CODE);
-        Toast.makeText(getActivity(), "pickFromCamera içinde, ÇALIŞIYOR1", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getActivity(), "pickFromCamera içinde, ÇALIŞIYOR1", Toast.LENGTH_SHORT).show();
+        //galleryActivityResultLauncher.launch(cameraIntent); //çalışmadı
 
 
     }
@@ -536,6 +553,7 @@ public class ProfileFragment extends Fragment {
         Intent galleryIntent = new Intent(Intent.ACTION_PICK);
         galleryIntent .setType("image/*");
         startActivityForResult(galleryIntent, IMAGE_PICK_GALLERY_CODE);
+        //galleryActivityResultLauncher.launch(galleryIntent);
     }
 
     private void checkUserStatus() {
@@ -588,5 +606,28 @@ public class ProfileFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+/*
+
+//Alt kısmı startActivityForResult alternatifi olarak yazmıştım ama çalışmadı
+    private ActivityResultLauncher<Intent> galleryActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                //here we will handle the result of our intent
+                    if(result.getResultCode() == RESULT_OK){
+                        //image picked
+                        //get uri of image
+                        Intent data = result.getData();
+                        Uri imageUri = data.getData();
+                        //uploadProfileCoverPhoto(imageUri);
+                    }
+                    else{
+                        //cancelled
+                        //Toast.makeText(ProfileFragment.this, "c", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+*/
 
 }

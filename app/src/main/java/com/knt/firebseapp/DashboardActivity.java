@@ -87,6 +87,15 @@ public class DashboardActivity extends AppCompatActivity {
                             return true;
 
 
+                        case R.id.nav_chat:
+                            //users fragment transaction
+                            actionBar.setTitle("Chat");//Change actionbar title
+                            ChatListFragment fragment4 = new ChatListFragment();
+                            FragmentTransaction ft4 = getSupportFragmentManager().beginTransaction();
+                            ft4.replace(R.id.content, fragment4, "").commit();
+                            return true;
+
+
                     }
 
 
@@ -100,7 +109,7 @@ public class DashboardActivity extends AppCompatActivity {
         if (user != null) {
             //user is signed in stay here
             //set email of logged in user
-            //mProfileTv.setText(user.getEmail());
+            //mProfileTv.setText(user.getEmail()); //burayı en başta eklerken hangi sayfada olduğumuzu görmek için eklemiştik önemli bişi değil sktret
 
         } else {
             //user not signed in, go to main activity

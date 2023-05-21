@@ -59,7 +59,14 @@ public class LoginActivity extends AppCompatActivity {
         // In the onCreate() method, initialize the FirebaseAuth instance
         mAuth = FirebaseAuth.getInstance();
 
-        tanimla();
+
+        mEmailEt = findViewById(R.id.emailET);
+        mPasswordEt = findViewById(R.id.passwordET);
+        notHaveAccountTv = findViewById(R.id.nothave_account);
+        mRecoverPassTv = findViewById(R.id.recoverPassTv);
+        mLoginBtn = findViewById(R.id.loginBtn);
+
+        //tanimla();
 
         //login button click
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
@@ -207,25 +214,29 @@ public class LoginActivity extends AppCompatActivity {
                             //Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
 
-                            //Get user email and uid from auth
-                            String email= user.getEmail();
-                            String uid = user.getUid();
-                            //When user is regsitered store user info in firebase realtime database too
-                            //using HashMap
-                            HashMap<Object, String> hashMap = new HashMap<>();
-                            //put info in hashmap
-                            hashMap.put("email", email);
-                            hashMap.put("uid", uid);
-                            hashMap.put("name", ""); //will add later (e.g edit profile)
-                            hashMap.put("phone", "");//will add later (e.g edit profile)
-                            hashMap.put("image", "");//will add later (e.g edit profile)
+                            if(task.getResult().getAdditionalUserInfo().isNewUser()){ // EMAİL VE UİDNİN HARİCİNDEKİ ALLAHIN BELASI DATALARIN LOGİNDE GELMEME SEBEBİ BU İF KOŞULUNU KOYMAMAMMIŞ BİLEKLERİMİ KESCEM ŞİMDİ
+                                //Get user email and uid from auth
+                                String email= user.getEmail();
+                                String uid = user.getUid();
+                                //When user is regsitered store user info in firebase realtime database too
+                                //using HashMap
+                                HashMap<Object, String> hashMap = new HashMap<>();
+                                //put info in hashmap
+                                hashMap.put("email", email);
+                                hashMap.put("uid", uid);
+                                hashMap.put("name", ""); //will add later (e.g edit profile)
+                                hashMap.put("phone", "");//will add later (e.g edit profile)
+                                hashMap.put("image", "");//will add later (e.g edit profile)
 
-                            //firebase database instance
-                            FirebaseDatabase database = FirebaseDatabase.getInstance();
-                            //path to store user data named "Users"
-                            DatabaseReference reference = database.getReference("Users");
-                            //put data within hashmap in database
-                            reference.child(uid).setValue(hashMap);
+                                //firebase database instance
+                                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                //path to store user data named "Users"
+                                DatabaseReference reference = database.getReference("Users");
+                                //put data within hashmap in database
+                                reference.child(uid).setValue(hashMap);
+                            }
+
+
 
 
                             //user is logged in, so start LoginActivity

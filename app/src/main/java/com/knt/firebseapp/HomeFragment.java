@@ -135,7 +135,7 @@ public class HomeFragment extends Fragment {
                             modelPost.getpDescr().toLowerCase().contains(searchQuery.toLowerCase())){
                         postList.add(modelPost);
 
-                        Toast.makeText(getActivity(), "Search posts içinde", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getActivity(), "Search posts içinde", Toast.LENGTH_SHORT).show();
                     }
 
                     //adapter

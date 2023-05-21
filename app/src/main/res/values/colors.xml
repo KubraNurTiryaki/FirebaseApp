@@ -12,4 +12,7 @@
     <color name="mavibisi">#a3c2c2</color>
     <color name="muhtesemmavi">#669999</color>
     <color name="muhtesemturuncu">#ff3300</color>
+    <color name="colorPrimaryDark">#ff3300</color>
+    <color name="bilmiom">#ff963b</color>
+    <color name="zeytinYesili">#b3b333</color>
 </resources>
