@@ -1,6 +1,7 @@
 package com.knt.firebseapp.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.knt.firebseapp.ChatActivity;
 import com.knt.firebseapp.R;
 import com.knt.firebseapp.models.ModelUser;
 import com.squareup.picasso.Picasso;
@@ -41,9 +43,10 @@ public class AdapterUsers extends RecyclerView.Adapter<AdapterUsers.MyHolder> {
     @Override
     public void onBindViewHolder(@NonNull MyHolder holder, int position) {
         //get data
+        final String theirUID = userList.get(position).getUid();
         String userImage = userList.get(position).getImage();
         String userName = userList.get(position).getName();
-        String userEmail = userList.get(position).getEmail();
+        final String userEmail = userList.get(position).getEmail();
 
         //set data
         holder.mNameTv.setText(userName);
@@ -61,7 +64,15 @@ public class AdapterUsers extends RecyclerView.Adapter<AdapterUsers.MyHolder> {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, ""+userEmail, Toast.LENGTH_SHORT).show();
+                /*Click user from user list to start chatting/messaging
+                * Start activity by puttinh UID of receğiver
+                * we will use that UID to identife the user we are gonna chat*/
+
+                Intent intent = new Intent(context, ChatActivity.class);
+                intent.putExtra("theirUid", theirUID);
+                context.startActivity(intent);
+
+
             }
         });
 
