@@ -30,6 +30,7 @@
             </ImageView>
 
             <LinearLayout
+                android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
                 android:layout_marginTop="100dp"
@@ -95,6 +96,13 @@
 
 
             </LinearLayout>
+
+            <!--RecyclerView: User spesific posts-->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerview_posts"
+                android:layout_below="@+id/linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
 
         </RelativeLayout>
 

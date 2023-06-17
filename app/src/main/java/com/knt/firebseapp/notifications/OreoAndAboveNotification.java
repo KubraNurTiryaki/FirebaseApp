@@ -13,13 +13,13 @@ import android.os.Build;
 public class OreoAndAboveNotification extends ContextWrapper {
 
     private static final String ID = "some_id";
-    private static final String NAME = "FirebaseAPP";
+    private static final String NAME = "Firebase APP";
 
     private NotificationManager notificationManager;
 
     public OreoAndAboveNotification(Context base) {
         super(base);
-        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createChannel();
         }
     }
@@ -31,24 +31,22 @@ public class OreoAndAboveNotification extends ContextWrapper {
         notificationChannel.enableLights(true);
         notificationChannel.enableVibration(true);
         notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
-getManager().createNotificationChannel(notificationChannel);
-
+        getManager().createNotificationChannel(notificationChannel);
 
 
     }
 
 
-
-    public NotificationManager getManager(){
-        if(notificationManager == null){
+    public NotificationManager getManager() {
+        if (notificationManager == null) {
             notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         }
         return notificationManager;
     }
 
     @TargetApi(Build.VERSION_CODES.O)
-    public Notification.Builder getONotifications(String title, String body, PendingIntent pendingIntent, Uri soundUri, String icon){
-        return new Notification.Builder(getApplicationContext(),ID)
+    public Notification.Builder getONotifications(String title, String body, PendingIntent pendingIntent, Uri soundUri, String icon) {
+        return new Notification.Builder(getApplicationContext(), ID)
                 .setContentIntent(pendingIntent)
                 .setContentTitle(title)
                 .setContentText(body)
@@ -58,7 +56,6 @@ getManager().createNotificationChannel(notificationChannel);
 
 
     }
-
 
 
 }

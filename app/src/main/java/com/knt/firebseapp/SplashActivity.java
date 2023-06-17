@@ -6,9 +6,6 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.knt.firebseapp.MainActivity;
-import com.knt.firebseapp.R;
-
 public class SplashActivity extends AppCompatActivity {
 
     @SuppressLint("ResourceType")
@@ -20,7 +17,7 @@ public class SplashActivity extends AppCompatActivity {
         Thread timerThread = new Thread(){
             public void run(){
                 try{
-                    sleep(3000);
+                    sleep(1000);
                 }catch(InterruptedException e){
                     e.printStackTrace();
                 }finally{
@@ -37,4 +34,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onPause();
         finish();
     }
+
+
+
 }

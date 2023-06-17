@@ -1,11 +1,5 @@
 package com.knt.firebseapp;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,12 +9,17 @@ import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -32,6 +31,12 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.knt.firebseapp.adapters.AdapterChat;
 import com.knt.firebseapp.models.ModelChat;
+import com.knt.firebseapp.models.ModelUser;
+import com.knt.firebseapp.notifications.Client;
+import com.knt.firebseapp.notifications.Data;
+import com.knt.firebseapp.notifications.Response;
+import com.knt.firebseapp.notifications.Sender;
+import com.knt.firebseapp.notifications.Token;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -39,6 +44,9 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -68,6 +76,10 @@ public class ChatActivity extends AppCompatActivity {
     String myUid;
     String theirImage;
 
+
+    APIService apiService;
+    boolean notify = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +102,11 @@ public class ChatActivity extends AppCompatActivity {
         //recyclerview properties
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
+
+        //create api service
+        apiService = Client.getRetrofit("https://fcm.googleapis.com/").create(APIService.class);
+
+
 
         /*On clicking from user list we have passed that user's UID using intent
          * So get that uid here to get the profile, picture, name and start chat with that
@@ -165,22 +182,22 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-        sendBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                //get text from edit text
-                String message = messageEt.getText().toString().trim();
-                //check if text is empty or not
-                if (TextUtils.isEmpty(message)) {
-                    //text empty
-                    Toast.makeText(ChatActivity.this, "Cannot send the empty message...", Toast.LENGTH_SHORT).show();
-                } else {
-                    // text not empty
-                    sendMessage(message);
-                }
-
+        sendBtn.setOnClickListener(v -> {
+            notify = true;
+            //get text from edit text
+            String message = messageEt.getText().toString().trim();
+            //check if text is empty or not
+            if (TextUtils.isEmpty(message)) {
+                //text empty
+                Toast.makeText(ChatActivity.this, "Cannot send the empty message...", Toast.LENGTH_SHORT).show();
+            } else {
+                // text not empty
+                sendMessage(message);
             }
+
+            //reset edittext after sending message
+            messageEt.setText("");
+
         });
 
         //check edit text change lstener
@@ -223,6 +240,9 @@ public class ChatActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnopshot) {
                 for (DataSnapshot ds : dataSnopshot.getChildren()) {
                     ModelChat chat = ds.getValue(ModelChat.class);
+                    if(chat.getReceiver() == null){
+                        chat.setReceiver("");
+                    }
                     if (chat.getReceiver().equals(myUid) && chat.getSender().equals(theirUid)) {
                         HashMap<String, Object> hasSeenHashMap = new HashMap<>();
                         hasSeenHashMap.put("isSeen", true);
@@ -245,13 +265,17 @@ public class ChatActivity extends AppCompatActivity {
         chatList = new ArrayList<>();
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("Chats");
         dbRef.addValueEventListener(new ValueEventListener() {
+
             @Override
             public void onDataChange(@NonNull DataSnapshot datasnopshot) {
                 chatList.clear();
                 for (DataSnapshot ds : datasnopshot.getChildren()) {
                     ModelChat chat = ds.getValue(ModelChat.class);
-                    if ((chat.getReceiver().equals(myUid) && chat.getSender().equals(theirUid)) ||
-                            (chat.getReceiver().equals(theirUid) && chat.getSender().equals(myUid))) {
+                    if(chat.getReceiver() == null){
+                        chat.setReceiver("");
+                    }
+                    if (chat.getReceiver().equals(myUid) && chat.getSender().equals(theirUid)||
+                            chat.getReceiver().equals(theirUid) && chat.getSender().equals(myUid)) {
                         chatList.add(chat);
                     }
 
@@ -293,8 +317,73 @@ public class ChatActivity extends AppCompatActivity {
         hashMap.put("isSeen", false);
         databaseReference.child("Chats").push().setValue(hashMap);
 
-        //reset edittext after sending message
-        messageEt.setText("");
+
+
+        final DatabaseReference database = FirebaseDatabase.getInstance().getReference("Users").child(myUid);
+        database.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                ModelUser user = snapshot.getValue(ModelUser.class);
+                if(user.getName()==null){
+                    user.setName("");
+                }
+                if(notify){
+                sendNotification(theirUid,user.getName(),message);
+                }
+                notify = false;
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+
+    }
+
+    private void sendNotification(final String theirUid,final String name,final String message) {
+        DatabaseReference allTokens = FirebaseDatabase.getInstance().getReference("Tokens");
+        Query query = allTokens.orderByKey().equalTo(theirUid);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot ds : snapshot.getChildren()){
+                    Token token = ds.getValue(Token.class);
+                    Data data = new Data(myUid,name+":"+message,"New Message", theirUid, R.drawable.ic_default_img );
+
+                    if(token.getToken()==null){
+                        token.setToken("");
+                    }
+                    Sender sender = new Sender(data, token.getToken());
+                    apiService.sendNotification(sender)
+                            .enqueue(new Callback<Response>() {
+                                @Override
+                                public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
+                                    Toast.makeText(ChatActivity.this, "sendNotification onResponse içinde ChatActivity"+response.message(), Toast.LENGTH_SHORT).show();
+                                }
+
+                                @Override
+                                public void onFailure(Call<Response> call, Throwable t) {
+                                    Toast.makeText(ChatActivity.this, "burda bişi oluyo mu, OLMUYOMUŞ", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
     }
 
 
@@ -333,10 +422,10 @@ public class ChatActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
+        super.onStart();
         checkUserStatus();
         //set online
         checkOnlineStatus("online");
-        super.onStart();
     }
 
     @Override
@@ -353,16 +442,17 @@ public class ChatActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+        super.onResume();
         //set online
         checkOnlineStatus("online");
-        super.onResume();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        //hide searchview, as we dont need it here
+        //hide searchview, add post as we dont need it here
         menu.findItem(R.id.action_search).setVisible(false);
+        menu.findItem(R.id.action_add_post).setVisible(false);
 
 
         return super.onCreateOptionsMenu(menu);
