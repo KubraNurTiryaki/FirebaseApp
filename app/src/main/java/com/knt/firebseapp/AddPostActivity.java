@@ -1,13 +1,5 @@
 package com.knt.firebseapp;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
@@ -25,6 +17,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -204,6 +204,8 @@ public class AddPostActivity extends AppCompatActivity {
                                 hashMap.put("pDescr", description);
                                 hashMap.put("pImage", downloadUri);
                                 hashMap.put("pTime", timeStamp);
+                                hashMap.put("pLikes","0");
+                                hashMap.put("pComments","0");
 
 
                                 //path to store post data
@@ -215,7 +217,7 @@ public class AddPostActivity extends AppCompatActivity {
                                             public void onSuccess(Void unused) {
                                                 //added in database
                                                 pd.dismiss();
-                                                Toast.makeText(AddPostActivity.this, "Post published aşkom", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(AddPostActivity.this, "Post published", Toast.LENGTH_SHORT).show();
                                                 //reset views
                                                 titleEt.setText("");
                                                 descriptionEt.setText("");
@@ -262,7 +264,8 @@ public class AddPostActivity extends AppCompatActivity {
             hashMap.put("pDescr", description);
             hashMap.put("pImage", "noImage");
             hashMap.put("pTime", timeStamp);
-
+            hashMap.put("pLikes","0");
+            hashMap.put("pComments","0");
 
             //path to store post data
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Posts");
@@ -273,7 +276,7 @@ public class AddPostActivity extends AppCompatActivity {
                         public void onSuccess(Void unused) {
                             //added in database
                             pd.dismiss();
-                            Toast.makeText(AddPostActivity.this, "Post published aşkom", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AddPostActivity.this, "Post published", Toast.LENGTH_SHORT).show();
                             titleEt.setText("");
                             descriptionEt.setText("");
                             imageIv.setImageURI(null);
