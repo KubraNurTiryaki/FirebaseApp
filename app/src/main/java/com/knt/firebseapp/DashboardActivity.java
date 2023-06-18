@@ -97,7 +97,7 @@ public class DashboardActivity extends AppCompatActivity {
                                 }
                                 /*
                                 ref.child(mUID).setValue(mToken);*/
-                                Toast.makeText(DashboardActivity.this, "Token updated in Firebase: " + token, Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(DashboardActivity.this, "Token updated in Firebase: " + token, Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(DashboardActivity.this, "Failed to retrieve token: Token is null", Toast.LENGTH_SHORT).show();
                             }

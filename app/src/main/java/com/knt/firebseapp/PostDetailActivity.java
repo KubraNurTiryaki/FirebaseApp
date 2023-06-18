@@ -533,7 +533,7 @@ public class PostDetailActivity extends AppCompatActivity {
                 //keeep checking the posts until the required post
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     //get data
-                    String pTitle = "" + ds.child("pTitle").getValue();
+                    String pTitle = "" + ds.child("pTıtle").getValue();
                     String pDescr = "" + ds.child("pDescr").getValue();
                     pLikes = "" + ds.child("pLikes").getValue();
                     String pTimeStamp = "" + ds.child("pTime").getValue();

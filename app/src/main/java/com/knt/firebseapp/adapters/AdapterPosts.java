@@ -180,8 +180,6 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
                                 mProcessLike = false;
 
                             }
-
-
                         }
                     }
 
@@ -190,9 +188,6 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
 
                     }
                 });
-
-
-
 
             }
         });
@@ -227,11 +222,11 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
            }
        });
 
-
     }
 
     private void setLikes(final MyHolder holder, final String postKey) {
         likesRef.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.child(postKey).hasChild(myUid)){
@@ -351,8 +346,6 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
                     }
                 });
 
-
-
             }
         })
                 .addOnFailureListener(new OnFailureListener() {
@@ -363,8 +356,6 @@ public class AdapterPosts extends RecyclerView.Adapter<AdapterPosts.MyHolder> {
                         Toast.makeText(context, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-
-
     }
 
     private void deleteWithoutImage(String pId) {
