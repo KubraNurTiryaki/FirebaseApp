@@ -54,7 +54,7 @@ public class ChatActivity extends AppCompatActivity {
     //Views from xml
     Toolbar toolbar;
     RecyclerView recyclerView;
-    ImageView profileTv;
+    ImageView profileIv;
     TextView nameTv, userStatusTv;
     EditText messageEt;
     ImageButton sendBtn;
@@ -90,7 +90,7 @@ public class ChatActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle("");
         recyclerView = findViewById(R.id.chat_recyclerView);
-        profileTv = findViewById(R.id.profileIv);
+        profileIv = findViewById(R.id.profileIv);
         nameTv = findViewById(R.id.nameTv);
         userStatusTv = findViewById(R.id.userStatusTv);
         messageEt = findViewById(R.id.messageEt);
@@ -166,10 +166,10 @@ public class ChatActivity extends AppCompatActivity {
 
                     try {
                         //image receiver, set it to imageview in toolnar
-                        Picasso.get().load(theirImage).placeholder(R.drawable.ic_default_img_white).into(profileTv);
+                        Picasso.get().load(theirImage).placeholder(R.drawable.ic_default_img_white).into(profileIv);
                     } catch (Exception e) {
                         //there is exception getting picture, set defalut picture
-                        Picasso.get().load(R.drawable.ic_default_img_white).into(profileTv);
+                        Picasso.get().load(R.drawable.ic_default_img_white).into(profileIv);
                     }
 
                 }
@@ -341,8 +341,49 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+//create chatlist node/ child in firebase
+
+        final DatabaseReference chatRef1 = FirebaseDatabase.getInstance().getReference("Chatlist")
+                .child(myUid)
+                .child(theirUid);
+        chatRef1.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                if (!snapshot.exists()) {
+                    chatRef1.child("id").setValue(theirUid);
+                }
 
 
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        final DatabaseReference chatRef2 = FirebaseDatabase.getInstance().getReference("Chatlist")
+                .child(theirUid)
+                .child(myUid);
+
+        chatRef2.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                if (!snapshot.exists()){
+                    chatRef2.child("id").setValue(myUid);
+                }
+
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void sendNotification(final String theirUid,final String name,final String message) {
@@ -363,7 +404,7 @@ public class ChatActivity extends AppCompatActivity {
                             .enqueue(new Callback<Response>() {
                                 @Override
                                 public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
-                                    Toast.makeText(ChatActivity.this, "sendNotification onResponse içinde ChatActivity"+response.message(), Toast.LENGTH_SHORT).show();
+                                   // Toast.makeText(ChatActivity.this, "sendNotification onResponse içinde ChatActivity"+response.message(), Toast.LENGTH_SHORT).show();
                                 }
 
                                 @Override

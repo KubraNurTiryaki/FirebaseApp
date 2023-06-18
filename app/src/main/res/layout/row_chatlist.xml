@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:contentPadding="3dp">
+
+
+    <!--layout for chatlist to display in receiver-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!--IV: User Profile Image-->
+        <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profileIv"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:src="@drawable/ic_default_img"></de.hdodenhof.circleimageview.CircleImageView>
+
+
+        <!--ImageView: online/offline status-->
+        <ImageView
+            android:id="@+id/onlineStatusIv"
+            android:layout_width="25dp"
+            android:layout_height="25dp"></ImageView>
+        <!--TV : Username-->
+        <TextView
+            android:id="@+id/nameTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Their name"
+            android:textColor="@color/black"
+            android:layout_marginStart="4dp"
+            android:layout_marginLeft="4dp"
+            android:textSize="18sp"
+            android:layout_toEndOf="@id/profileIv"
+            android:layout_toRightOf="@id/profileIv"></TextView>
+
+        <!--TV : Last message (by sender/receiver)-->
+        <TextView
+            android:id="@+id/lastMessageTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="The last message"
+            android:maxLines="7"
+            android:layout_marginStart="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_toEndOf="@id/profileIv"
+            android:layout_toRightOf="@id/profileIv"
+            android:layout_below="@id/nameTv"></TextView>
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>
