@@ -65,11 +65,7 @@ public class DashboardActivity extends AppCompatActivity {
 
         updateToken();
 
-
-
         /*        updateToken(FirebaseMessaging.getInstance().getToken());*/
-
-
 
     }
 
@@ -78,9 +74,6 @@ public class DashboardActivity extends AppCompatActivity {
         checkUserStatus();
         super.onResume();
     }
-
-
-
 
     private void updateToken() {
         FirebaseMessaging.getInstance().getToken()
@@ -113,10 +106,6 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
 
-
-
-
-
 /*    public void updateToken(String token){
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Tokens");
         Token mToken = new Token(token);
@@ -125,7 +114,6 @@ public class DashboardActivity extends AppCompatActivity {
 
 
     }*/
-
 
     final private NavigationBarView.OnItemSelectedListener selectedListener =
             new NavigationBarView.OnItemSelectedListener() {
@@ -168,11 +156,7 @@ public class DashboardActivity extends AppCompatActivity {
                             FragmentTransaction ft4 = getSupportFragmentManager().beginTransaction();
                             ft4.replace(R.id.content, fragment4, "").commit();
                             return true;
-
-
                     }
-
-
                     return false;
                 }
             };
@@ -215,7 +199,6 @@ public class DashboardActivity extends AppCompatActivity {
         super.onStart();
 
     }
-
 
 
     public void tanimla() {

@@ -198,7 +198,6 @@ public class PostDetailActivity extends AppCompatActivity {
             }
         });
 
-
     }
 
     private void showMoreOptions() {
@@ -212,7 +211,6 @@ public class PostDetailActivity extends AppCompatActivity {
             popupMenu.getMenu().add(Menu.NONE, 1, 0, "Edit"); // Bu satır normalde post editlemek için var ama daha yazmadım onun kodunu
         }
 
-
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
@@ -224,8 +222,6 @@ public class PostDetailActivity extends AppCompatActivity {
                     Intent intent = new Intent(PostDetailActivity.this, AddPostActivity.class);
 
                 }
-
-
                 return false;
             }
         });
@@ -233,9 +229,7 @@ public class PostDetailActivity extends AppCompatActivity {
         //show menu
         popupMenu.show();
 
-
     }
-
     private void beginDelete() {
 
         //post can be with or wo image
