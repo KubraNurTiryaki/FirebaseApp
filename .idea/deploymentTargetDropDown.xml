@@ -7,12 +7,13 @@
         <deviceKey>
           <Key>
             <type value="SERIAL_NUMBER" />
-            <value value="192.168.77.111:5555" />
+            <value value="192.168.77.109:5555" />
           </Key>
         </deviceKey>
       </Target>
     </runningDeviceTargetSelectedWithDropDown>
-    <timeTargetWasSelectedWithDropDown value="2023-06-18T16:02:47.216956700Z" />
+    <timeTargetWasSelectedWithDropDown value="2023-06-19T13:34:17.861415500Z" />
+    <multipleDevicesSelectedInDropDown value="true" />
     <runningDeviceTargetsSelectedWithDialog>
       <Target>
         <type value="RUNNING_DEVICE_TARGET" />
@@ -20,15 +21,6 @@
           <Key>
             <type value="SERIAL_NUMBER" />
             <value value="192.168.77.111:5555" />
-          </Key>
-        </deviceKey>
-      </Target>
-      <Target>
-        <type value="RUNNING_DEVICE_TARGET" />
-        <deviceKey>
-          <Key>
-            <type value="SERIAL_NUMBER" />
-            <value value="192.168.77.109:5555" />
           </Key>
         </deviceKey>
       </Target>

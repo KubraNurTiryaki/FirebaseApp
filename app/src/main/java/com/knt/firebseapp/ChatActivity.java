@@ -303,7 +303,7 @@ public class ChatActivity extends AppCompatActivity {
          * message: the actual message*/
 
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+        final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
 
         String timestamp = String.valueOf(System.currentTimeMillis());
@@ -374,11 +374,7 @@ public class ChatActivity extends AppCompatActivity {
                 if (!snapshot.exists()){
                     chatRef2.child("id").setValue(myUid);
                 }
-
-
-
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
@@ -394,7 +390,7 @@ public class ChatActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot ds : snapshot.getChildren()){
                     Token token = ds.getValue(Token.class);
-                    Data data = new Data(myUid,name+":"+message,"New Message", theirUid, R.drawable.ic_default_img );
+                    Data data = new Data(myUid,name+":"+message,"New Message", theirUid, R.drawable.ic_default_img);
 
                     if(token.getToken()==null){
                         token.setToken("");
@@ -403,8 +399,9 @@ public class ChatActivity extends AppCompatActivity {
                     apiService.sendNotification(sender)
                             .enqueue(new Callback<Response>() {
                                 @Override
-                                public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
+                                public void onResponse(Call<Response> call, @NonNull retrofit2.Response<Response> response) {
                                    // Toast.makeText(ChatActivity.this, "sendNotification onResponse içinde ChatActivity"+response.message(), Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(ChatActivity.this, ""+response.message(), Toast.LENGTH_SHORT).show();
                                 }
 
                                 @Override
@@ -412,12 +409,8 @@ public class ChatActivity extends AppCompatActivity {
                                     Toast.makeText(ChatActivity.this, "burda bişi oluyo mu, OLMUYOMUŞ", Toast.LENGTH_SHORT).show();
                                 }
                             });
-
-
                 }
-
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 

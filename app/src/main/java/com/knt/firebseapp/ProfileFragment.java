@@ -171,14 +171,8 @@ public class ProfileFragment extends Fragment {
                         Picasso.get().load(cover).into(coverIv);
                     } catch (Exception e) {
                         //if there is any exception while getting image then set default
-
-
                     }
-
-
                 }
-
-
             }
 
             @Override
@@ -190,9 +184,7 @@ public class ProfileFragment extends Fragment {
 //fab buton click
         fab.setOnClickListener(view1 -> showEditProfileDialog());
 
-
         postList = new ArrayList<>();
-
 
         checkUserStatus();
         loadMyPosts();
@@ -231,17 +223,14 @@ public class ProfileFragment extends Fragment {
                     adapterPosts = new AdapterPosts(getActivity(), postList);
                     //set this adapter to recyclerview
                     postsRecyclerView.setAdapter(adapterPosts);
-
-
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getActivity(), "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "" + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-
 
     }
 
@@ -268,37 +257,26 @@ public class ProfileFragment extends Fragment {
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     ModelPost myPosts = ds.getValue(ModelPost.class);
 
-
                     if (myPosts.getpTitle() == null) {
                         myPosts.setpTitle("");
                     }
                     if (myPosts.getpTitle().toLowerCase().contains(searchQuery.toLowerCase()) ||
                             myPosts.getpDescr().toLowerCase().contains(searchQuery.toLowerCase())) {
-
-
                         //add to list
                         postList.add(myPosts);
                     }
-
-
                     //adapter
                     adapterPosts = new AdapterPosts(getActivity(), postList);
                     //set this adapter to recyclerview
                     postsRecyclerView.setAdapter(adapterPosts);
-
-
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(getActivity(), "" + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-
-
     }
-
 
     private boolean checkStoragePermission() {
         //check if storage permission is enabled or not
@@ -311,13 +289,11 @@ public class ProfileFragment extends Fragment {
         return result;
     }
 
-
     private void requestStoragePermission() {
         //request runtime storage permission
         // requestPermissions(storagePermissions,STORAGE_REQUEST_CODE);
         ActivityCompat.requestPermissions(getActivity(), storagePermissions, STORAGE_REQUEST_CODE);
     }
-
 
     private boolean checkCameraPermission() {
         //check if camera permission is enabled or not
@@ -332,7 +308,6 @@ public class ProfileFragment extends Fragment {
 
         return result && result1;
     }
-
 
     private void requestCameraPermission() {
         //request runtime camera permission
@@ -380,7 +355,6 @@ public class ProfileFragment extends Fragment {
         });
         //create and show dialog
         builder.create().show();
-
 
     }
 
@@ -437,13 +411,11 @@ public class ProfileFragment extends Fragment {
                                 snapshot.getRef().child(child).child("uName").setValue(value);
                             }
                         }
-
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
 
                         }
                     });
-
 
                     //update name in current users comments on posts
                     ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -460,18 +432,12 @@ public class ProfileFragment extends Fragment {
                                             for (DataSnapshot ds : snapshot.getChildren()) {
                                                 String child = ds.getKey();
                                                 snapshot.getRef().child(child).child("uName").setValue(value);
-
-
                                             }
                                         }
-
                                         @Override
                                         public void onCancelled(@NonNull DatabaseError error) {
-
                                         }
                                     });
-
-
                                 }
                             }
                         }
@@ -558,7 +524,7 @@ public class ProfileFragment extends Fragment {
                         //permissions enabled
                         pickFromCamera();
 
-                        Toast.makeText(getActivity(), "On request permissins result içinde , camera accepted", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getActivity(), "On request permissins result içinde , camera accepted", Toast.LENGTH_SHORT).show();
 
                     } else {
                         //permissions denied
@@ -580,7 +546,6 @@ public class ProfileFragment extends Fragment {
                     }
                 }
 
-
             }
             break;
         }
@@ -600,7 +565,6 @@ public class ProfileFragment extends Fragment {
 
                 uploadProfileCoverPhoto(image_uri);
             }
-
             if (requestCode == IMAGE_PICK_CAMERA_CODE) {
                 //image is picked from camera, get uri of image
                 //image_uri = data.getData();
@@ -706,17 +670,13 @@ public class ProfileFragment extends Fragment {
                                                         String child = ds.getKey();
                                                         snapshot.getRef().child(child).child("uDp").setValue(downloadUri.toString());
 
-
                                                     }
                                                 }
-
                                                 @Override
                                                 public void onCancelled(@NonNull DatabaseError error) {
 
                                                 }
                                             });
-
-
                                         }
                                     }
                                 }
@@ -726,10 +686,7 @@ public class ProfileFragment extends Fragment {
 
                                 }
                             });
-
-
                         }
-
 
                     } else {
                         //error
@@ -789,8 +746,6 @@ public class ProfileFragment extends Fragment {
             getActivity().finish();
         }
     }
-
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
 
@@ -799,7 +754,6 @@ public class ProfileFragment extends Fragment {
 
 
     }
-
 
     /*inflate options menu*/
     @Override
@@ -847,7 +801,6 @@ public class ProfileFragment extends Fragment {
     }
 
     /*handle menu item clicks*/
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         //get item id
